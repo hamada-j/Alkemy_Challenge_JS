@@ -56,11 +56,11 @@ router.use(rMiddleware.registerAction);
 *   userSchema:
 *     type: object
 *     required:
-*       - nombre
+*       - usuario
 *       - email
 *       - password
 *     properties:
-*       nombre:
+*       usuario:
 *         type: string
 *       email:
 *         type: string
@@ -197,7 +197,6 @@ router.post("/post_movement", async (req, res, next) => {
       tipo: req.body.tipo,
       fecha: req.body.fecha,
       usuario: req.body.usuario,
-    
     });
     res.status(201).json(result);
   } catch (err) {
