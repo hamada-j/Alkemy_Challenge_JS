@@ -60,6 +60,7 @@ const createMovement = ({ concepto, cantidad, tipo, usuario }) => {
   });
 };
 
+
 const updateMovement = ({ concepto, cantidad, tipo, usuario, id }) => {
   return new Promise((resolve, reject) => {
     db.query(

@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'angular-alkemy-challenge'`, () => {
+  it(`should have as title 'Alkemy-Challenge-JS-Angular'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('angular-alkemy-challenge');
+    expect(app.title).toEqual('Alkemy-Challenge-JS-Angular');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('angular-alkemy-challenge app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain('Alkemy-Challenge-JS-Angular app is running!');
   });
 });

@@ -1,0 +1,100 @@
+<!-- <div
+  *ngIf="showLand"
+  class="container"
+  style="background-color: black"
+  [@enterAnimation]
+>
+  land Page
+</div> -->
+<div *ngIf="showToken">
+  your token is temporal, confirm your account in the email link
+</div>
+
+<div
+  class="container"
+  id="container"
+  #myContainer
+  *ngIf="!showLand && !showToken"
+  [@enterAnimation]
+>
+  <div class="form-container signup-container">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegister()">
+      <h1>Create Account</h1>
+      <div class="social-container">
+        <a href="#" class="social"><i class="fab fa-github"></i></a>
+        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+      <span>or use your email to join us</span>
+      <input type="text" placeholder="Name" formControlName="usuario" />
+      <input type="text" placeholder="Email" formControlName="email" />
+      <input type="text" placeholder="Password" formControlName="password" />
+      <button type="submit">Sign Up</button>
+    </form>
+    <p>
+      {{ responseError }}
+    </p>
+  </div>
+  <div class="form-container signin-container">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()">
+      <h1>Sign In</h1>
+      <div class="social-container">
+        <a href="#" class="social"><i class="fab fa-github"></i></a>
+        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+      <span>or use your account</span>
+      <!-- Username -->
+
+      <input
+        *ngIf="usernameOrEmail"
+        type="text"
+        placeholder="Email"
+        formControlName="email"
+      />
+
+      <input
+        *ngIf="!usernameOrEmail"
+        type="text"
+        placeholder="Username "
+        formControlName="username"
+      />
+      <i
+        style="cursor: pointer"
+        [ngClass]="{
+          'fab fa-font-awesome': usernameOrEmail,
+          'fas fa-envelope': !usernameOrEmail
+        }"
+        (click)="handleClickUsernameOrEmail($event)"
+      ></i>
+
+      <input type="text" placeholder="Password" formControlName="password" />
+      <a href="#" class="forgot">Forgot your Password</a>
+      <button type="submit">Sign In</button>
+    </form>
+    <p>
+      {{ responseError }}
+    </p>
+  </div>
+  <div class="overlay-container">
+    <div class="overlay">
+      <div class="overlay-panel overlay-left">
+        <h1>Welcome Back!</h1>
+        <p>To keep connected with us please log in with your account</p>
+        <button (click)="handleClickSignIn()" class="over-btn" id="signin">
+          Sign In
+        </button>
+      </div>
+      <div class="overlay-panel overlay-right">
+        <h1>Hello, there</h1>
+        <p>To join us please enter your personal details</p>
+        <button (click)="handleClickSignUp()" class="over-btn" id="signup">
+          Sign Up
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  Khushboo Kundnani
+ -->

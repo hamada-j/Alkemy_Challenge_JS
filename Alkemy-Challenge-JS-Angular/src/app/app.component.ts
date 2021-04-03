@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'angular-alkemy-challenge';
+  title = 'Alkemy-Challenge-JS-Angular';
 }

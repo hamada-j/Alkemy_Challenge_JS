@@ -1,0 +1,90 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import "~@angular/material/theming";
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$angular-alkemy-challenge-primary: mat-palette($mat-indigo);
+$angular-alkemy-challenge-accent: mat-palette($mat-pink, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$angular-alkemy-challenge-warn: mat-palette($mat-red);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$angular-alkemy-challenge-theme: mat-light-theme(
+  (
+    color: (
+      primary: $angular-alkemy-challenge-primary,
+      accent: $angular-alkemy-challenge-accent,
+      warn: $angular-alkemy-challenge-warn,
+    ),
+  )
+);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($angular-alkemy-challenge-theme);
+
+body {
+  font-family: "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding: 100px;
+  font-size: 13px;
+  background-color: #5555;
+  -webkit-animation: background 5s cubic-bezier(1, 0, 0, 1);
+  animation: background 5s cubic-bezier(1, 0, 0, 1);
+  overflow: hidden;
+}
+@-webkit-keyframes background {
+  0% {
+    background-color: rgb(133, 133, 133);
+  }
+  33% {
+    background-color: rgb(136, 136, 136);
+  }
+  67% {
+    background-color: rgb(128, 128, 128);
+  }
+  100% {
+    background-color: rgba(78, 78, 78, 0.333);
+  }
+}
+
+@keyframes background {
+  0% {
+    background-color: rgb(133, 133, 133);
+  }
+  33% {
+    background-color: rgb(136, 136, 136);
+  }
+  67% {
+    background-color: rgb(128, 128, 128);
+  }
+  100% {
+    background-color: rgba(78, 78, 78, 0.333);
+  }
+}
+.baby {
+  width: 50px;
+}
+
+img {
+  vertical-align: top;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

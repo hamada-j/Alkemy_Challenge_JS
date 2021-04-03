@@ -1,0 +1,97 @@
+.container {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  position: relative;
+  overflow: hidden;
+  width: 768px;
+  margin: 0 auto;
+  max-width: 100%;
+  min-height: 520px;
+  min-width: 50%;
+  padding: 13px;
+}
+
+.example-tab-icon {
+  margin-right: 8px;
+}
+
+.mat-tab-group {
+  margin-bottom: 48px;
+  margin-bottom: 0px;
+}
+
+text {
+  color: black;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  fill: black !important;
+}
+
+.example-container {
+  height: 270px;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}
+
+tr.mat-footer-row {
+  font-weight: bold;
+}
+
+.mat-table-sticky {
+  border-top: 1px solid #e0e0e0;
+}
+
+.example-h2 {
+  margin: 1px;
+}
+
+.example-section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.example-margin {
+  margin: 0 10px;
+}
+
+.mat-card {
+  padding: 0px;
+  margin-bottom: 2px;
+}
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.example-container .mat-form-field + .mat-form-field {
+  margin-left: 8px;
+}
+
+.example-right-align {
+  text-align: right;
+}
+
+input.example-right-align::-webkit-outer-spin-button,
+input.example-right-align::-webkit-inner-spin-button {
+  display: none;
+}
+
+input.example-right-align {
+  -moz-appearance: textfield;
+}
+
+.example-form-field {
+  margin-right: 20px;
+}
