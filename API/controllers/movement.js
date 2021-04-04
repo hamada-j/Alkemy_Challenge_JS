@@ -4,7 +4,7 @@ const getAllMovement = pUserId => {
 
   return new Promise((resolve, reject) => {
     db.query(
-      "select * from `movements` where usuario = ?",
+      "select * from `movements` where usuario = ? ORDER BY `fecha` DESC",
       [pUserId],
       (err, rows) => {
         if (err) {

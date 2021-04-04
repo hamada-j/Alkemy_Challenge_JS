@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
-import { HttpClient  } from "@angular/common/http";
+import { HttpClient, HttpHeaders  } from "@angular/common/http";
 //import { shortUrl } from './model/shortUrl';
 import { environment } from "../environments/environment";
+import { Movements } from "./models/Movemnts";
 
 
 
@@ -14,27 +15,28 @@ const BACKEND_URL = environment.apiUrl;
 
 export class ApiService {
   baseUrl = BACKEND_URL;
-  http: any;
+
+
   constructor(private httpClient: HttpClient) {}
 
-  getAllMovement(userId: string): Promise<any[]> {
-    return this.httpClient.get<any[]>(`${this.baseUrl}/all_movement/${userId}`).toPromise();
+  getAllMovement(userId: string): Promise<Movements[]> {
+    return this.httpClient.get<Movements[]>(`${this.baseUrl}/all_movement/${userId}`,this.createHeaders()).toPromise();
   }
 
-  getMovement(idMovement: string): Promise<any> {
-    return this.httpClient.get<any>(`${this.baseUrl}/one_movement/${idMovement}`).toPromise();
+  getMovement(idMovement: string): Promise<Movements> {
+    return this.httpClient.get<Movements>(`${this.baseUrl}/one_movement/${idMovement}`, this.createHeaders()).toPromise();
   }
 
-  createMovement(formValues: object): Promise<any> {
-    return this.httpClient.post<any>(`${this.baseUrl}/post_movement`, formValues).toPromise();
+  createMovement(formValues: object): Promise<Movements> {
+    return this.httpClient.post<Movements>(`${this.baseUrl}/post_movement`, formValues, this.createHeaders()).toPromise();
   }
 
-  updateMovement(formValues: object, id: string): Promise<any> {
-    return this.httpClient.patch<any>(`${this.baseUrl}/update_movement/${id}`, formValues).toPromise();
+  updateMovement(formValues: object, id: string): Promise<Movements> {
+    return this.httpClient.patch<Movements>(`${this.baseUrl}/update_movement/${id}`, formValues, this.createHeaders()).toPromise();
   }
 
-  deleteUrl(id: string): Promise<any> {
-    return this.httpClient.delete<any>(`${this.baseUrl}/delete_one_movement/${id}`).toPromise();
+  deleteUrl(id: string): Promise<Movements> {
+    return this.httpClient.delete<Movements>(`${this.baseUrl}/delete_one_movement/${id}`, this.createHeaders()).toPromise();
   }
 
 
@@ -46,6 +48,14 @@ export class ApiService {
 
   login(formValues: object): Promise<any> {
     return this.httpClient.post<any>(`${this.baseUrl}/login`, formValues).toPromise();
+  }
+
+  createHeaders() {
+    return {
+      headers: new HttpHeaders({
+        'token': localStorage.getItem("token")
+      })
+    };
   }
 
 

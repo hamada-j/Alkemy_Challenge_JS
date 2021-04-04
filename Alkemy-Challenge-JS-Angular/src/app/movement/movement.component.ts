@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import * as Highcharts from "highcharts";
 import HC_exporting from "highcharts/modules/exporting";
+import { ApiService } from '../api.service';
+import { Movements } from '../models/Movemnts';
+
+//import { chartOptions } from '../utils/chartOptions'
 
 @Component({
   selector: 'app-movement',
@@ -12,16 +18,57 @@ import HC_exporting from "highcharts/modules/exporting";
 
 export class MovementComponent implements OnInit {
 
-  labelPosition: 'before' | 'after' = 'after';
+  arrMovements: Movements[];
+  responseError: string;
+
+  movementForm: FormGroup;
+
+  labelPosition: 'positivo' | 'negativo';
+  displayedColumns = ['Concepto', 'Tipo', 'Cantidad', 'Fecha'];
 
   chartOptions: {};
   Highcharts = Highcharts;
 
   data = []
 
-  constructor() { }
+  constructor(private restFullApi: ApiService, private routing: Router) {
 
-  ngOnInit(): void {
+
+
+    this.arrMovements = [];
+    this.responseError = "";
+
+    this.movementForm = new FormGroup({
+      concepto: new FormControl('', [
+        Validators.required
+      ]),
+      fecha: new FormControl('', [
+        Validators.required
+      ]),
+      cantidad: new FormControl('', [
+        Validators.required
+      ]),
+      tipo: new FormControl('', [
+        Validators.required
+      ])
+    });
+  }
+
+  async onSubmitMovement() {
+
+    console.log(this.movementForm.value)
+    console.log(this.movementForm.value.fecha['_i'])
+  }
+
+  async ngOnInit() {
+
+    await this.restFullApi.getAllMovement("1").then(async res => {
+        this.arrMovements = res
+        console.log(res)
+    }).catch(err => {
+          this.responseError = `Error in your login: ${err.statusText}`;
+      });
+
 
     this.chartOptions = {
       chart: {
@@ -55,9 +102,9 @@ export class MovementComponent implements OnInit {
       exporting: {
         enabled: true,
       },
-
       //series: this.data,
-      series: [{
+      series: [
+        {
         name: 'Asia',
         data: [502, 635, 809, 947, 1402, 3634, 5268]
         }, {
@@ -74,30 +121,22 @@ export class MovementComponent implements OnInit {
             data: [2, 2, 2, 6, 13, 30, 46]
         }]
     };
+
     HC_exporting(Highcharts);
     setTimeout(() => {
       window.dispatchEvent(new Event("resize"));
     }, 300);
   }
 
-  displayedColumns = ['item', 'cost'];
-  transactions: Transaction[] = [
-    {item: 'Beach ball', cost: 4},
-    {item: 'Towel', cost: 5},
-    {item: 'Frisbee', cost: 2},
-    {item: 'Sunscreen', cost: 4},
-    {item: 'Cooler', cost: 25},
-    {item: 'Swim suit', cost: 15},
-  ];
+
 
   /** Gets the total cost of all transactions. */
   getTotalCost() {
-    return this.transactions.map(t => t.cost).reduce((acc, value) => acc + value, 0);
+    const positiveAmount = this.arrMovements.filter(positive => positive.tipo === "positivo").map(t =>  t.cantidad).reduce((acc, value) => acc + value, 0);
+    const negativeAmount  = this.arrMovements.filter(positive => positive.tipo === "negativo").map(t =>  t.cantidad).reduce((acc, value) => acc + value, 0);
+    return positiveAmount - negativeAmount;
   }
 
 }
 
-export interface Transaction {
-  item: string;
-  cost: number;
-}
+

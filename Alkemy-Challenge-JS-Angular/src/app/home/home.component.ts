@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
@@ -30,11 +30,12 @@ export class HomeComponent implements OnInit {
 
   usernameOrEmail: boolean;
   showLand: boolean;
-  showToken: boolean;
+  temporalLogin: boolean;
 
   responseError: String;
 
   @ViewChild("myContainer") Container: any;
+  @ViewChild('myContainer') private draggableElement: ElementRef;
 
   loginForm: FormGroup;
   registerForm: FormGroup;
@@ -44,9 +45,9 @@ export class HomeComponent implements OnInit {
   constructor(private restFullApi: ApiService, private routing: Router) {
 
     this.showLand = true;
-    this.showToken = false;
     this.usernameOrEmail = false;
     this.responseError = "";
+    this.temporalLogin = false;
 
     this.loginForm = new FormGroup({
       email: new FormControl('', [
@@ -86,16 +87,33 @@ export class HomeComponent implements OnInit {
   }
 
 
+  localStorageItems(option: string, response: object) {
+
+    localStorage.setItem("userId", response["id"]);
+    localStorage.setItem("token", response["success"]);
+    localStorage.setItem("token_since", new Date().toString());
+
+    if (option === "login"){
+    this.routing.navigate(["/movement"]);
+    }else{
+      this.draggableElement.nativeElement.remove();
+      this.temporalLogin = true;
+      setTimeout(() => {
+          this.temporalLogin = false;
+          this.routing.navigate(["/movement"]);
+        }, 20000);
+    }
+
+  }
+
 
   async onSubmitLogin() {
 
     if (this.loginForm.value.email !== ""){
       await this.restFullApi.login(this.loginForm.value).then(async res => {
         console.log(res)
-        this.routing.navigate([`/movement`]);
-
+        this.localStorageItems("login", res)
     }).catch(err => {
-
           this.responseError = `Error in your login: ${err.statusText}`;
           this.resetResponse();
       });
@@ -111,22 +129,18 @@ export class HomeComponent implements OnInit {
         await this.restFullApi.login({
           email: this.registerForm.value.email,
           password: this.registerForm.value.password}).then(async res => {
-
         console.log(res)
+        this.localStorageItems("register", res)
         // send email with link
-
-        this.showToken = true;
-        setTimeout(() => {
-          this.showToken = false;
-          this.routing.navigate([`/`]);
-        }, 3000);
-
         }).catch(err => {
           console.log(err)
-          this.responseError = "error"
-          console.log(err)});
+        });
       }
-    });
+    }).catch(err => {
+        console.log(err)
+        this.responseError = `Error in your register: ${err.statusText}`;
+        this.resetResponse();
+      });
   }
 
   handleClickUsernameOrEmail(){

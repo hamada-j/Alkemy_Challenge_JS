@@ -10,6 +10,8 @@ const { check, validationResult } = require("express-validator");
 
 const rMiddleware = require("../middleware/registerAction");
 
+const tMiddleware = require("../middleware/checkToken");
+
 const mController = require("../controllers/movement");
 
 const User = require("../models/user");
@@ -18,6 +20,7 @@ const createToken = require("../utils/createToken");
 
 
 router.use(rMiddleware.registerAction);
+
 
 /**
 * @swagger
@@ -99,7 +102,7 @@ router.use(rMiddleware.registerAction);
 *
 */
 
-router.get("/all_movement/:userId", async (req, res, next) => {
+router.get("/all_movement/:userId", tMiddleware.checkToken, async (req, res, next) => {
 
   try {
     const rows = await mController.getAllMovement(req.params.userId);
@@ -429,7 +432,7 @@ router.post("/login", async (req, res) => {
     
     if (equal) {
 
-      res.status(201).json({ success: createToken(user)});
+      res.status(201).json({ id: user.id, success: createToken(user)});
     } else {
       res.status(401).json({ error: "error en email y/o password" });
     }

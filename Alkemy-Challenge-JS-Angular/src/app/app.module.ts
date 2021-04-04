@@ -13,7 +13,7 @@ import { MovementComponent } from './movement/movement.component';
 
 import { HighchartsChartModule } from "highcharts-angular";
 
-// use
+// UI
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTableModule} from '@angular/material/table';
@@ -22,7 +22,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatMomentDateModule } from "@angular/material-moment-adapter";
+import {MatButtonModule} from '@angular/material/button';
 
 
 @NgModule({
@@ -47,9 +49,14 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
     MatCardModule,
     MatInputModule,
     MatDatepickerModule,
+    MatMomentDateModule,
+    MatButtonModule,
     HighchartsChartModule
   ],
-  providers: [],
+  providers: [
+    MatDatepickerModule,
+    MatMomentDateModule
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

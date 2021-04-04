@@ -36,6 +36,7 @@ text {
 
 table {
   width: 100%;
+  text-align: center;
 }
 
 tr.mat-footer-row {
@@ -47,7 +48,7 @@ tr.mat-footer-row {
 }
 
 .example-h2 {
-  margin: 1px;
+  margin: 15px;
 }
 
 .example-section {
@@ -72,7 +73,8 @@ tr.mat-footer-row {
 }
 
 .example-full-width {
-  width: 100%;
+  margin-left: 5px;
+  width: 50%;
 }
 
 .example-container .mat-form-field + .mat-form-field {
@@ -93,5 +95,6 @@ input.example-right-align {
 }
 
 .example-form-field {
-  margin-right: 20px;
+  margin-right: 2px;
+  margin-left: 4px;
 }

@@ -6,15 +6,16 @@
 >
   land Page
 </div> -->
-<div *ngIf="showToken">
-  your token is temporal, confirm your account in the email link
+<div class="container temporalLogin" *ngIf="temporalLogin">
+  Tu token es temporal, no olvides confirmar tu cuenta via email. your token is
+  temporal, don't forget to confirm your account in the email link.
 </div>
 
 <div
   class="container"
   id="container"
   #myContainer
-  *ngIf="!showLand && !showToken"
+  *ngIf="!showLand && !temporalLogin"
   [@enterAnimation]
 >
   <div class="form-container signup-container">
