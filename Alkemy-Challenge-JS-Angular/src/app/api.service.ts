@@ -45,10 +45,17 @@ export class ApiService {
   register(formValues: object): Promise<any> {
     return this.httpClient.post<any>(`${this.baseUrl}/register`, formValues).toPromise();
   }
-
-  login(formValues: object): Promise<any> {
-    return this.httpClient.post<any>(`${this.baseUrl}/login`, formValues).toPromise();
+  loginWithEmail(formValues: object): Promise<any> {
+    return this.httpClient.post<any>(`${this.baseUrl}/login_with_email`, formValues).toPromise();
   }
+  loginWithUsername(formValues: object): Promise<any> {
+    return this.httpClient.post<any>(`${this.baseUrl}/login_with_username`, formValues).toPromise();
+  }
+
+  forgotPassword(formValues): Promise<any> {
+    return this.httpClient.post<any>(`${this.baseUrl}/forgot`, formValues).toPromise();
+  }
+
 
   createHeaders() {
     return {

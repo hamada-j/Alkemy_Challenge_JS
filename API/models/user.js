@@ -37,9 +37,24 @@ const emailExists = pEmail => {
   });
 };
 
+const nameExists = pName => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "select * from users where usuario = ?",
+      [pName],
+      (err, rows) => {
+        if (err) return reject(err);
+        if (rows.length === 0) return resolve(null);
+        resolve(rows[0]);
+      }
+    );
+  });
+};
+
 module.exports = {
   create: create,
   emailExists: emailExists,
+  nameExists: nameExists,
   UserModel: UserModel
 };
 

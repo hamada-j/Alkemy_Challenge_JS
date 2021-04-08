@@ -1,6 +1,6 @@
 'use strict';
 const express = require("express");
-const router = express.Router();
+
 const nodemailer = require("nodemailer");
 
 const createToken = require("./createToken");
@@ -29,10 +29,9 @@ let mailOptions = {
     "If you did not request this, please ignore this email and your password will remain unchanged.\n",
 };
 
-// step 3
-router.post("/forgot", function (req, res, next) {
-  console.log("HERE");
-  transporter.sendMail(mailOptions, function (err, data) {
+
+
+ const createToken = transporter.sendMail(mailOptions, function (err, data) {
     if (err) {
       console.log("error not sent___", err);
       //res.render("forgotPassword");
@@ -41,6 +40,6 @@ router.post("/forgot", function (req, res, next) {
       //res.render("reset");
     }
   });
-});
 
-module.exports = router;
+
+module.exports = createToken;

@@ -7,8 +7,11 @@
   land Page
 </div> -->
 <div class="container temporalLogin" *ngIf="temporalLogin">
-  Tu token es temporal, no olvides confirmar tu cuenta via email. your token is
-  temporal, don't forget to confirm your account in the email link.
+  <p>
+    Tu token es temporal, no olvides confirmar tu cuenta via email. Your token
+    is
+  </p>
+  <p>temporal, don't forget to confirm your account in the email link.</p>
 </div>
 
 <div
@@ -27,7 +30,7 @@
         <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
       </div>
       <span>or use your email to join us</span>
-      <input type="text" placeholder="Name" formControlName="usuario" />
+      <input type="text" placeholder="Name" formControlName="username" />
       <input type="text" placeholder="Email" formControlName="email" />
       <input type="text" placeholder="Password" formControlName="password" />
       <button type="submit">Sign Up</button>
@@ -70,7 +73,9 @@
       ></i>
 
       <input type="text" placeholder="Password" formControlName="password" />
-      <a href="#" class="forgot">Forgot your Password</a>
+      <a routerLink="/forgot" routerLinkActive="list-item-active" class="forgot"
+        >Forgot your Password</a
+      >
       <button type="submit">Sign In</button>
     </form>
     <p>

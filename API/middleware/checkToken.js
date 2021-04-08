@@ -26,7 +26,7 @@ const checkToken = (req, res, next) => {
     });
   }
 
-  console.log(payload);
+  
 
   const fechaActual = moment().unix();
   if (fechaActual > payload.fechaExpiracion) {

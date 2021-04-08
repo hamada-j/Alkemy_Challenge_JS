@@ -2,7 +2,7 @@
 // const router = require("express").Router();
 const express = require("express");
 const router = express.Router();
-
+const nodemailer = require("nodemailer");
 const bcrypt = require("bcryptjs");
 
 
@@ -13,10 +13,13 @@ const rMiddleware = require("../middleware/registerAction");
 const tMiddleware = require("../middleware/checkToken");
 
 const mController = require("../controllers/movement");
+const sController = require("../controllers/user");
 
 const User = require("../models/user");
 
 const createToken = require("../utils/createToken");
+
+const generatePassword = require("../utils/generateID");
 
 
 router.use(rMiddleware.registerAction);
@@ -193,14 +196,9 @@ router.get("/one_movement/:movementId", async (req, res, next) => {
 */
 
 router.post("/post_movement", async (req, res, next) => {
+  console.log(req.body)
   try {
-    const result = await mController.createMovement({
-      concepto: req.body.concepto,
-      cantidad: req.body.cantidad,
-      tipo: req.body.tipo,
-      fecha: req.body.fecha,
-      usuario: req.body.usuario,
-    });
+    const result = await mController.createMovement(req.body);
     res.status(201).json(result);
   } catch (err) {
     res.status(500).json(err);
@@ -349,7 +347,7 @@ router.delete("/delete_one_movement/:movementId", async (req, res, next) => {
 router.post(
   "/register",
   [
-    check("usuario", "el nombre de usario de 3 a 10 valores")
+    check("username", "el nombre de usario de 3 a 10 valores")
       .isLength({ min: 3, max: 10 })
       .isAlphanumeric(),
     check("email", "el email debe ser correcto")
@@ -364,10 +362,11 @@ router.post(
   async (req, res) => {
 
     const errors = validationResult(req);
-    
-    const user = await User.emailExists(req.body.email);
+    const userEmail = await User.emailExists(req.body.email);
+    const userName = await User.nameExists(req.body.username);
 
-    if (!errors.isEmpty() || user) {
+    if (!errors.isEmpty() || userEmail || userName) {
+      console.log("here is the error")
       return res.status(422).json(errors.array());
     }
    
@@ -375,8 +374,12 @@ router.post(
     req.body.password = passwordEnc;
 
     try {
-      
-      const result = await User.create(req.body);
+      let newUser = {
+        usuario: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+      }
+      const result = await User.create(newUser);
       res.status(201).json(result);
     } catch (err) {
       console.log(err);
@@ -387,10 +390,10 @@ router.post(
 
 /**
 * @swagger
-* /login:
+* /login_with_email:
 *   post:
-*     summary: "Login a user in the Api"
-*     tags: [Login a User]
+*     summary: "Login a user in the Api with Email"
+*     tags: [Login a User with Email]
 *     produces:
 *       - application/json:
 *         content:
@@ -420,8 +423,7 @@ router.post(
 *         description: Validation errors
 */
 
-router.post("/login", async (req, res) => {
-  
+router.post("/login_with_email", async (req, res) => { 
   try {
     const user = await User.emailExists(req.body.email);
     if (!user) {
@@ -441,9 +443,174 @@ router.post("/login", async (req, res) => {
   }
 });
 
+/**
+* @swagger
+* /login_with_username:
+*   post:
+*     summary: "Login a user in the Api with Username"
+*     tags: [Login a User with Username]
+*     produces:
+*       - application/json:
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*     parameters:
+*       - in: body
+*         name: body
+*         required: true
+*         description: object with url.
+*         schema:
+*            $ref: "#/definitions/userSchema"
+*     requestBody:
+*      content:
+*       application/json:
+*        schema:   
+*         $ref: "#/definitions/userSchema"         
+*     responses:
+*       200:
+*         description: Get one 
+*       400:
+*         description: Bad Request
+*       500:
+*         description: Internal Server Error
+*       888:
+*         description: Validation errors
+*/
+
+
+router.post("/login_with_username", async (req, res) => { 
+  try {
+    const user = await User.nameExists(req.body.username);
+    if (!user) {
+      res.status(401).json({ error: "error en email y/o password" });
+    }
+    
+    const equal = bcrypt.compareSync(req.body.password, user.password);
+    
+    if (equal) {
+
+      res.status(201).json({ id: user.id, success: createToken(user)});
+    } else {
+      res.status(401).json({ error: "error en email y/o password" });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 
 
+/**
+* @swagger
+* /forgot:
+*   post:
+*     summary: "User forgot the password and the Api send temporal one"
+*     tags: [Forgot the password]
+*     produces:
+*       - application/json:
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*     parameters:
+*       - in: body
+*         name: body
+*         required: true
+*         description: object with url.
+*         schema:
+*            $ref: "#/definitions/userSchema"
+*     requestBody:
+*      content:
+*       application/json:
+*        schema:   
+*         $ref: "#/definitions/userSchema"         
+*     responses:
+*       200:
+*         description: Get one 
+*       400:
+*         description: Bad Request
+*       500:
+*         description: Internal Server Error
+*       888:
+*         description: Validation errors
+*/
+
+
+router.post("/forgot", async (req, res) => { 
+
+  try {
+    const user = await User.emailExists(req.body.email);
+
+    if (!user) {
+      res.status(401).json({ error: "this email is not in the DataBase" });
+    }
+
+    let newPassword = generatePassword()
+    const passwordEnc = bcrypt.hashSync(newPassword, 8);
+ 
+    let docData = {
+      usuario: user.usuario,
+      email: user.email,
+      password: passwordEnc,
+      id: user.id
+    }
+
+    await sController.updatePassword(docData)
+
+      let transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: "testingemailnodejs@gmail.com",
+          pass: "12345admin=",
+        },
+      });
+
+      let mailOptions = {
+        from: "testingnodejs@gmail.com",
+        to: user.email,
+        subject: "APP ECO [ Password Reset ]",
+        text:
+          `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\nThis is your temporal password: ${newPassword}\n\nBest regards.\n`,
+      };
+
+      transporter.sendMail(mailOptions, function (err, data) {
+        if (err) {
+          console.log("error not sent___", err);
+          res.status(401).json({ message: "No se ha podido enviar el email " + err });
+        } else {
+          console.log("email is sent");
+          res.status(201).json({ message: "Email is sent"});
+        }
+      });
+ 
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+
+
+
+// const passport = require('passport')
+// let GoogleStrategy = require('passport-google-oauth').OAuthStrategy;
+
+// passport.use(new GoogleStrategy({
+//     consumerKey: GOOGLE_CONSUMER_KEY,
+//     consumerSecret: GOOGLE_CONSUMER_SECRET,
+//     callbackURL: "/"
+//   },
+//   (token, tokenSecret, profile, done) => {
+//       User.findOrCreate({ googleId: profile.id }, function (err, user) {
+//         return done(err, user);
+//       });
+//   }
+// ));
+
+
+// router.get('/login_with_google', async (req, res) => { 
+
+// })
 
 
 module.exports = router;

@@ -25,13 +25,15 @@ import {MatInputModule} from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatMomentDateModule } from "@angular/material-moment-adapter";
 import {MatButtonModule} from '@angular/material/button';
+import { ForgotComponent } from './forgot/forgot.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    MovementComponent
+    MovementComponent,
+    ForgotComponent
   ],
   imports: [
     BrowserModule,

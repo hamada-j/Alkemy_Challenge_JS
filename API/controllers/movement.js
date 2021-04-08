@@ -44,11 +44,11 @@ const getMovement = pMovementId => {
 
 };
 
-const createMovement = ({ concepto, cantidad, tipo, usuario }) => {
+const createMovement = ({ concepto, cantidad, tipo, fecha, usuario }) => {
   return new Promise((resolve, reject) => {
     db.query(
-      "insert into movements (concepto, cantidad, tipo, usuario) values (?,?,?,?)",
-      [concepto, cantidad, tipo, usuario],
+      "insert into movements (concepto, cantidad, tipo, fecha, usuario) values (?,?,?,?,?)",
+      [concepto, cantidad, tipo, fecha, usuario],
       (err, result) => {
         if (err) {
           reject(err);

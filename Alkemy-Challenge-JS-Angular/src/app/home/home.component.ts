@@ -62,7 +62,7 @@ export class HomeComponent implements OnInit {
     });
 
     this.registerForm =new FormGroup({
-      usuario: new FormControl('', [
+      username: new FormControl('', [
         Validators.required
       ]),
       email: new FormControl('', [
@@ -88,7 +88,6 @@ export class HomeComponent implements OnInit {
 
 
   localStorageItems(option: string, response: object) {
-
     localStorage.setItem("userId", response["id"]);
     localStorage.setItem("token", response["success"]);
     localStorage.setItem("token_since", new Date().toString());
@@ -101,7 +100,7 @@ export class HomeComponent implements OnInit {
       setTimeout(() => {
           this.temporalLogin = false;
           this.routing.navigate(["/movement"]);
-        }, 20000);
+        }, 5000);
     }
 
   }
@@ -109,27 +108,37 @@ export class HomeComponent implements OnInit {
 
   async onSubmitLogin() {
 
-    if (this.loginForm.value.email !== ""){
-      await this.restFullApi.login(this.loginForm.value).then(async res => {
-        console.log(res)
+    let formValues = this.formValuesTrim(this.loginForm.value)
+
+    console.log(formValues);
+
+    if (formValues.email !== ""){
+      await this.restFullApi.loginWithEmail(formValues).then(async res => {
         this.localStorageItems("login", res)
     }).catch(err => {
           this.responseError = `Error in your login: ${err.statusText}`;
           this.resetResponse();
       });
     } else {
-      console.log('here is name')
+      await this.restFullApi.loginWithUsername(formValues).then(async res => {
+        this.localStorageItems("login", res)
+       }).catch(err => {
+          this.responseError = `Error in your login: ${err.statusText}`;
+          this.resetResponse();
+      });
     }
 
   }
 
+
+
   async onSubmitRegister() {
-    await this.restFullApi.register(this.registerForm.value).then(async res => {
+    let formValues = this.formValuesTrim(this.registerForm.value);
+    await this.restFullApi.register(formValues).then(async res => {
       if (res.affectedRows === 1 && res.insertId !== 0){
-        await this.restFullApi.login({
-          email: this.registerForm.value.email,
-          password: this.registerForm.value.password}).then(async res => {
-        console.log(res)
+        await this.restFullApi.loginWithEmail({
+          email: formValues.email,
+          password: formValues.password}).then(async res => {
         this.localStorageItems("register", res)
         // send email with link
         }).catch(err => {
@@ -151,6 +160,15 @@ export class HomeComponent implements OnInit {
     setTimeout(async () => {
       this.responseError = ""
     }, 3000);
+  }
+
+  formValuesTrim(inputs){
+    let formValues = {
+      username: inputs.username.trim(),
+      email: inputs.email.trim(),
+      password: inputs.password.trim()
+    }
+    return formValues;
   }
 
   ngOnInit(): void {

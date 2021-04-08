@@ -1,0 +1,32 @@
+<!-- <div
+  *ngIf="showLand"
+  class="container"
+  style="background-color: black"
+  [@enterAnimation]
+>
+  land Page
+</div> -->
+<div class="container temporalLogin" *ngIf="show">
+  <p>
+    Tu token es temporal, no olvides confirmar tu cuenta via email. Your token
+    is
+  </p>
+  <p>temporal, don't forget to confirm your account in the email link.</p>
+</div>
+
+<div class="container" id="container" #myContainer *ngIf="!show">
+  <div class="form-container signup-container">
+    <form [formGroup]="restPasswordForm" (ngSubmit)="onSubmit()">
+      <h1>Reset Password</h1>
+      <span>Use your email to get new password</span>
+      <input type="text" placeholder="Email" formControlName="email" />
+      <button type="submit">Reset</button>
+    </form>
+    <p *ngIf="sendEmail" class="responseOk social">
+      {{ responseOk }} <span class="material-icons"> send </span>
+    </p>
+    <p class="responseError">
+      {{ responseError }}
+    </p>
+  </div>
+</div>
