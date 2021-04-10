@@ -151,16 +151,15 @@
           <button *ngIf="editMode" type="submit" mat-button color="primary">
             <span class="material-icons"> edit_note </span>
           </button>
-          <button
-            *ngIf="editMode"
-            (click)="delete($event)"
-            type="submit"
-            mat-button
-            color="primary"
-          >
-            <span class="material-icons"> delete_forever </span>
-          </button>
         </form>
+        <button
+          *ngIf="editMode"
+          (click)="delete($event)"
+          mat-button
+          color="primary"
+        >
+          <span class="material-icons"> delete_forever </span>
+        </button>
       </div>
     </mat-tab>
 

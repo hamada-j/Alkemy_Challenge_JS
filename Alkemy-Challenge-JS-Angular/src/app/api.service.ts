@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, EventEmitter } from "@angular/core";
 import { HttpClient, HttpHeaders  } from "@angular/common/http";
 //import { shortUrl } from './model/shortUrl';
 import { environment } from "../environments/environment";
@@ -14,6 +14,9 @@ const BACKEND_URL = environment.apiUrl;
 })
 
 export class ApiService {
+
+  action$ = new EventEmitter<String>();
+
   baseUrl = BACKEND_URL;
 
 

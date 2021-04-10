@@ -110,8 +110,6 @@ export class HomeComponent implements OnInit {
 
     let formValues = this.formValuesTrim(this.loginForm.value)
 
-    console.log(formValues);
-
     if (formValues.email !== ""){
       await this.restFullApi.loginWithEmail(formValues).then(async res => {
         this.localStorageItems("login", res)

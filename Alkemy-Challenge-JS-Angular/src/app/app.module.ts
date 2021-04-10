@@ -26,6 +26,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatMomentDateModule } from "@angular/material-moment-adapter";
 import {MatButtonModule} from '@angular/material/button';
 import { ForgotComponent } from './forgot/forgot.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { ForgotComponent } from './forgot/forgot.component';
     MatDatepickerModule,
     MatMomentDateModule,
     MatButtonModule,
-    HighchartsChartModule
+    HighchartsChartModule,
+    MatDialogModule
   ],
   providers: [
     MatDatepickerModule,

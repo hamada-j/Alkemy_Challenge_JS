@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
 import * as Highcharts from "highcharts";
@@ -36,22 +37,25 @@ export class MovementComponent implements OnInit {
 
   data = []
 
-  constructor(private restFullApi: ApiService, private routing: Router) {
+  constructor(private restFullApi: ApiService, private routing: Router, public dialog: MatDialog) {
 
     this.editMode = false;
     this.arrMovements, this.positiveAmount, this.negativeAmount = [];
     this.total = 0;
     this.responseError = "";
-
+    const nonWhiteSpaceRegExp: RegExp = new RegExp("\\S");
+    const numberRegExp: RegExp  = new RegExp(/^-?(0|[1-9]\d*)?$/)
     this.movementForm = new FormGroup({
       concepto: new FormControl('', [
-        Validators.required
+        Validators.required,
+        Validators.pattern(nonWhiteSpaceRegExp)
       ]),
       fecha: new FormControl('', [
-        Validators.required
+        Validators.required,
       ]),
       cantidad: new FormControl('', [
-        Validators.required
+        Validators.required,
+        Validators.pattern(numberRegExp)
       ]),
       tipo: new FormControl('', [
         Validators.required
@@ -64,11 +68,9 @@ export class MovementComponent implements OnInit {
   formValues(inputs){
 
     let formValues = {};
-    const userId = localStorage.getItem("userId");
-
     let date = inputs.fecha['_i'];
     let editDate = inputs.fecha
-
+    const userId = localStorage.getItem("userId");
     if (this.editMode){
         formValues = {
         concepto: inputs.concepto.trim(),
@@ -78,53 +80,57 @@ export class MovementComponent implements OnInit {
         usuario: userId
       }
     } else {
-      formValues = {
-      concepto: inputs.concepto.trim(),
-      tipo: inputs.tipo,
-      cantidad: inputs.cantidad,
-      fecha: `${date.year}-${date.month}-${date.date}`,
-      usuario: userId
+        formValues = {
+        concepto: inputs.concepto.trim(),
+        tipo: inputs.tipo,
+        cantidad: inputs.cantidad,
+        fecha: `${date.year}-${date.month}-${date.date}`,
+        usuario: userId
+      }
     }
-    }return formValues;
+    return formValues;
   }
+
 
   async onSubmitMovement() {
-    if ( !this.editMode){
+    if(this.movementForm.valid){
     let doc = this.formValues(this.movementForm.value)
-    console.log(doc)
-    await this.restFullApi.createMovement(doc).then(async res => {
-      console.log(res)
-      this.ngOnInit();
-      this.movementForm.reset();
-    }).catch(err => {
-        console.log(err)
-      });
-    } else {
-      let doc = this.formValues(this.movementForm.value);
-      let id = this.docMovement.id.toString();
-      await this.restFullApi.updateMovement(doc, id).then(async res => {
-        console.log(res)
-        this.editMode = false;
-        this.ngOnInit();
-        this.movementForm.reset();
-      }).catch(err => {
-          console.log(err)
-      });
+        if ( !this.editMode){
+        await this.restFullApi.createMovement(doc).then(async res => {
+          this.movementForm.reset();
+          this.ngOnInit();
+        }).catch(err => {
+            console.log(err)
+          });
+        } else {
+          let id = this.docMovement.id.toString();
+          await this.restFullApi.updateMovement(doc, id).then(async res => {
+            this.editMode = false;
+            this.movementForm.reset();
+            this.ngOnInit();
+          }).catch(err => {
+              console.log(err)
+          });
+        }
     }
 
 
+
   }
+
   async delete(e){
     let id = this.docMovement.id.toString()
-    await this.restFullApi.deleteUrl(id).then(async res => {
-        console.log(res)
-        this.editMode = false;
-        this.ngOnInit();
-        this.movementForm.reset();
+    this.dialog.open(DialogElementsExampleDialog);
+
+    await this.restFullApi.getMovement(id).then(async res => {
+      let numId = Number(id)
+      if (res[0].id === numId)
+        this.restFullApi.action$.emit(id);
       }).catch(err => {
           console.log(err)
       });
   }
+
 
   async onEdit(movementId){
     this.movementForm.reset();
@@ -164,8 +170,6 @@ export class MovementComponent implements OnInit {
           data: []
           };
 
-
-      console.log(this.arrMovements.length  )
       if (this.arrMovements.length > 0) {
 
       this.positiveAmount = this.arrMovements.filter(positive => positive.tipo === "positivo");
@@ -174,14 +178,14 @@ export class MovementComponent implements OnInit {
       for( let i = 0; i < this.positiveAmount.length; i++){
         objectPositive.data.push(this.positiveAmount[i].cantidad)
       };
-
+      objectPositive.data.reverse();
       this.negativeAmount = this.arrMovements.filter(positive => positive.tipo === "negativo")
       const negativeAmount  = this.negativeAmount.map(t =>  t.cantidad).reduce((acc, value) => acc + value, 0);
 
       for( let i = 0; i < this.negativeAmount.length; i++){
         objectNegative.data.push(this.negativeAmount[i].cantidad)
       };
-
+      objectNegative.data.reverse();
       this.total = positiveAmount - negativeAmount;
 
 
@@ -233,8 +237,64 @@ export class MovementComponent implements OnInit {
     setTimeout(() => {
       window.dispatchEvent(new Event("resize"));
     }, 300);
+
+    this.restFullApi.action$.subscribe(async getDeleted => {
+      if ( getDeleted === "deleted"){
+      this.ngOnInit()
+      this.movementForm.reset();
+      }
+
+    })
+
   }
 
+
+
+
+}
+
+@Component({
+  selector: 'dialog-elements-example-dialog',
+  styles: ['h1 { text-align: center; }', ' div { display: flex;  }'],
+  template: `
+    <h1 mat-dialog-title>Estas seguro de Borrar!</h1>
+    <div mat-dialog-actions>
+        <button (click)="delete($event)" mat-button style="color: green; margin: 10px 10px;">
+          <span class="material-icons">check_circle_outline</span></button>
+        <button (click)="cancel($event)" mat-button mat-dialog-close style="color: red; margin: 10px 10px;">
+          <span class="material-icons">cancel</span></button>
+    </div>`,
+})
+export class DialogElementsExampleDialog implements OnInit {
+
+  id: string;
+
+  constructor(private restFullApi: ApiService, public dialogRef: MatDialogRef<DialogElementsExampleDialog>) {
+    this.id = null;
+  }
+
+  async delete(e){
+    console.log(this.id)
+    await this.restFullApi.deleteUrl(this.id).then(async res => {
+      console.log(res)
+      if( res["affectedRows"] === 1)
+      this.restFullApi.action$.emit("deleted");
+      this.dialogRef.close();
+
+      }).catch(err => {
+          console.log(err)
+      });
+  }
+  cancel(e){
+    this.dialogRef.close();
+  }
+
+  ngOnInit(){
+    this.restFullApi.action$.subscribe(async getId => {
+      console.log(getId)
+      this.id = getId
+    })
+  }
 }
 
 

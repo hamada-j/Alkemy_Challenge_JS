@@ -146,7 +146,7 @@ router.get("/all_movement/:userId", tMiddleware.checkToken, async (req, res, nex
 *
 */
 
-router.get("/one_movement/:movementId", async (req, res, next) => {
+router.get("/one_movement/:movementId", tMiddleware.checkToken,  async (req, res, next) => {
 
   try {
     const rows = await mController.getMovement(req.params.movementId);
@@ -195,7 +195,7 @@ router.get("/one_movement/:movementId", async (req, res, next) => {
 *
 */
 
-router.post("/post_movement", async (req, res, next) => {
+router.post("/post_movement", tMiddleware.checkToken, async (req, res, next) => {
   console.log(req.body)
   try {
     const result = await mController.createMovement(req.body);
@@ -248,7 +248,7 @@ router.post("/post_movement", async (req, res, next) => {
 *
 */
 
-router.patch("/update_movement/:movementId", async (req, res, next) => {
+router.patch("/update_movement/:movementId", tMiddleware.checkToken, async (req, res, next) => {
   try {
     const result = await mController.updateMovement({
       concepto: req.body.concepto,
@@ -295,7 +295,7 @@ router.patch("/update_movement/:movementId", async (req, res, next) => {
 *
 */
 
-router.delete("/delete_one_movement/:movementId", async (req, res, next) => {
+router.delete("/delete_one_movement/:movementId", tMiddleware.checkToken, async (req, res, next) => {
 
   try {
     const rows = await mController.deleteMovement(req.params.movementId);
