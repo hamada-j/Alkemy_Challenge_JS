@@ -27,6 +27,8 @@ import { MatMomentDateModule } from "@angular/material-moment-adapter";
 import {MatButtonModule} from '@angular/material/button';
 import { ForgotComponent } from './forgot/forgot.component';
 import {MatDialogModule} from '@angular/material/dialog';
+import { SettingsComponent } from './settings/settings.component';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 
 @NgModule({
@@ -34,7 +36,8 @@ import {MatDialogModule} from '@angular/material/dialog';
     AppComponent,
     HomeComponent,
     MovementComponent,
-    ForgotComponent
+    ForgotComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
@@ -54,8 +57,10 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatDatepickerModule,
     MatMomentDateModule,
     MatButtonModule,
+    MatExpansionModule,
+    MatDialogModule,
     HighchartsChartModule,
-    MatDialogModule
+
   ],
   providers: [
     MatDatepickerModule,

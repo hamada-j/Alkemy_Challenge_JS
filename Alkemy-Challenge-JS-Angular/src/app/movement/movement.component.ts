@@ -265,6 +265,8 @@ export class MovementComponent implements OnInit {
           <span class="material-icons">cancel</span></button>
     </div>`,
 })
+
+
 export class DialogElementsExampleDialog implements OnInit {
 
   id: string;
