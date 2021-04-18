@@ -561,8 +561,8 @@ router.post("/forgot", async (req, res) => {
       let transporter = nodemailer.createTransport({
         service: "Gmail",
         auth: {
-          user: "testingemailnodejs@gmail.com",
-          pass: "12345admin=",
+          user: "un_email_de_Gmail_que_permita_acceso_app_de_terceros_O_un_server_email_propio@gmail.com",
+          pass: "la_contraseña_de_la_cuenta_email",
         },
       });
 
