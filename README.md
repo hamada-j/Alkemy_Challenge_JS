@@ -18,3 +18,5 @@ Estos datos en JSON deberán ser consumidos por un cliente, a través de peticio
 cliente puede ser armado con
 ● React.js
 ● Angular
+
+----
